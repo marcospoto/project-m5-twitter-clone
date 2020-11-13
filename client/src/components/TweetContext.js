@@ -46,7 +46,6 @@ export const TweetProvider = ({ children }) => {
       .then((res) => res.json())
       .then((json) => {
         const { tweet } = json;
-        console.log("hg", tweet);
         updateHomeFeed();
         setStatus("idle");
       });
@@ -56,6 +55,7 @@ export const TweetProvider = ({ children }) => {
     <TweetContext.Provider
       value={{
         tweets,
+        setTweets,
         postTweet,
       }}
     >

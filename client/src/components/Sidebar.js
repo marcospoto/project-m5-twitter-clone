@@ -22,7 +22,7 @@ const Sidebar = () => {
       </Div>
       <Div>
         <FiUser />
-        <NavigationLink to={`${currentUser}`}>Profile</NavigationLink>
+        <NavigationLink to={`/${currentUser.handle}`}>Profile</NavigationLink>
       </Div>
       <Div>
         <BsBell />

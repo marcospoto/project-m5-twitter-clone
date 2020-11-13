@@ -1,50 +1,51 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useParams, useHistory } from "react-router-dom";
+import moment from "moment";
 import styled from "styled-components";
 import { FiUpload } from "react-icons/fi";
 import { FaRegComment } from "react-icons/fa";
 import { AiOutlineRetweet } from "react-icons/ai";
 import { BiHeart } from "react-icons/bi";
-import moment from "moment";
 
-const Tweet = ({ avatar, displayName, userName, timestamp, status, media }) => {
-  let history = useHistory();
+export const SingleTweet = () => {
+  const { tweetId } = useParams();
+  const [tweetDetails, setTweetDetails] = useState(null);
 
-  const handleClickProfile = (e) => {
-    e.stopPropagation();
-    history.push(`/${userName}`);
-  };
-
-  // const handleClickToTweet = (e) => {
-  //   e.stopPropagation();
-  //   history.push(`/tweet/${tweetId}`);
-  // };
+  useEffect(() => {
+    fetch(`/api/tweet/${tweetId}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json.tweet.media.url);
+        setTweetDetails(json.tweet);
+      });
+  }, [tweetId]);
 
   return (
     <Wrapper>
-      <Avatar src={avatar} />
       <Body>
         <Header>
-          <Name onClick={handleClickProfile}>
-            <DisplayName>{displayName}</DisplayName>
-            <Username>@{userName}</Username>
-            <Timestamp>
-              {moment(new Date(timestamp)).format("· MMM Do")}
-            </Timestamp>
+          <Avatar src={tweetDetails?.author?.avatarSrc} />
+          <Name>
+            <DisplayName>{tweetDetails?.author?.displayName}</DisplayName>
+            <Username>@{tweetDetails?.author?.handle}</Username>
           </Name>
         </Header>
-        <TweetContents>{status}</TweetContents>
-        {media?.map((media, index) => {
+        <TweetContents>{tweetDetails?.status}</TweetContents>
+        {tweetDetails?.media?.map((media, index) => {
           if (media.type === "img")
             return (
               <Photo
-                src={media.url}
-                alt={`Image for ${status}`}
+                src={media?.url}
+                alt={`Image for ${tweetDetails?.status}`}
                 key={`img-order-${index}`}
               />
             );
         })}
-
+        <Timestamp>
+          {moment(new Date(tweetDetails?.timestamp)).format("LT · ll")}
+        </Timestamp>
         <Footer>
           <Stats>
             <FaRegComment />
@@ -62,12 +63,10 @@ const Tweet = ({ avatar, displayName, userName, timestamp, status, media }) => {
     </Wrapper>
   );
 };
-
 const Wrapper = styled.div`
   background: white;
   width: 580px;
   padding: 16px;
-  text-align: left;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Ubuntu, "Helvetica Neue", sans-serif;
   display: flex;
@@ -83,8 +82,8 @@ const Avatar = styled.img`
   border-radius: 50%;
 `;
 const Name = styled.div`
+  margin-left: 15px;
   flex: 1;
-  display: flex;
   cursor: pointer;
 `;
 const Body = styled.div`
@@ -102,7 +101,6 @@ const Username = styled.div`
   font-size: 15px;
   line-height: 20px;
   color: rgb(101, 119, 134);
-  margin-left: 10px;
 `;
 
 const Timestamp = styled.div`
@@ -140,5 +138,3 @@ const StatType = styled.span`
   color: rgb(101, 119, 134);
   margin-right: 30px;
 `;
-
-export default Tweet;

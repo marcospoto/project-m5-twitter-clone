@@ -6,44 +6,66 @@ import { GrLocation } from "react-icons/gr";
 import { FiCalendar } from "react-icons/fi";
 import moment from "moment";
 import { COLORS } from "../constants";
+import Tweet from "./Tweet";
 
 export const Profile = () => {
-  const [userProfile, setUserProfile] = useState({});
   const { currentUser } = useCurrentUser();
+  const [twitterProfile, setTwitterProfile] = useState(currentUser);
   const { profileId } = useParams();
+  const [tweets, setTweets] = useState([]);
 
-  console.log(currentUser);
+  useEffect(() => {
+    fetch(`/api/${profileId}/profile`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((json) => {
+        console.log(json);
+        setTwitterProfile(json.profile);
+      });
+  }, [profileId]);
+
+  useEffect(() => {
+    fetch(`/api/${profileId}/feed`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        setTweets(Object.values(json.tweetsById));
+      });
+  }, [profileId]);
 
   return (
     <Wrapper>
-      <Banner src={currentUser.bannerSrc} />
+      <Banner src={twitterProfile?.bannerSrc} />
       <Header>
-        <Avatar src={currentUser.avatarSrc} />
+        <Avatar src={twitterProfile?.avatarSrc} />
       </Header>
       <div>
-        <DisplayName>{currentUser.displayName}</DisplayName>
-        <Username>@{currentUser.handle}</Username>
-        <Bio>{currentUser.bio}</Bio>
+        <DisplayName>{twitterProfile?.displayName}</DisplayName>
+        <Username>@{twitterProfile?.handle}</Username>
+        <Bio>{twitterProfile?.bio}</Bio>
 
         <LocationJoined>
           <Text>
             <GrLocation />
-            <p>{currentUser.location}</p>
+            <p>{twitterProfile?.location}</p>
           </Text>{" "}
           <Text>
             <FiCalendar />
             <p>
-              Joined {moment(new Date(currentUser.joined)).format("MMMM YYYY")}
+              Joined{" "}
+              {moment(new Date(twitterProfile?.joined)).format("MMMM YYYY")}
             </p>
           </Text>
         </LocationJoined>
 
         <FollowContainer>
           <Following>
-            <span>{currentUser.numFollowing} </span>Following
+            <span>{twitterProfile?.numFollowing} </span>Following
           </Following>
           <Followers>
-            <span>{currentUser.numFollowers}</span> Followers
+            <span>{twitterProfile?.numFollowers}</span> Followers
           </Followers>
         </FollowContainer>
       </div>
@@ -58,6 +80,21 @@ export const Profile = () => {
           <p>Likes</p>
         </TabBox>
       </TabContainer>
+      <>
+        {tweets.map((tweet) => {
+          return (
+            <Tweet
+              key={tweet?.id}
+              avatar={tweet?.author?.avatarSrc}
+              displayName={tweet?.author?.displayName}
+              userName={tweet?.author?.handle}
+              timestamp={tweet?.timestamp}
+              status={tweet?.status}
+              media={tweet?.media}
+            />
+          );
+        })}
+      </>
     </Wrapper>
   );
 };

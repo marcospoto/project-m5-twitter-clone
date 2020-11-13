@@ -1,11 +1,12 @@
-import Tweet from "./Tweet";
 import React, { useEffect, useState, useContext } from "react";
 import { useTweet } from "./TweetContext";
 import styled from "styled-components";
 import PostTweet from "./PostTweet";
+import Tweet from "./Tweet";
 
 export const HomeFeed = () => {
   const { tweets } = useTweet();
+  console.log(tweets);
 
   return (
     <Wrapper>
