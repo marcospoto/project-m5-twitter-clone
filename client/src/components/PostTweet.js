@@ -1,31 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { COLORS } from "../constants";
 import { useTweet } from "./TweetContext";
+import { useCurrentUser } from "./CurrentUserContext";
 
 const PostTweet = () => {
   const { postTweet } = useTweet();
+  const { status } = useCurrentUser();
 
   const [count, setCount] = React.useState(280);
   const [post, setPost] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
 
   const handleChange = (value) => {
     setPost(value);
     setCount(280 - value.length);
   };
 
+  useEffect(() => {
+    if (count < 280) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [count]);
+
   return (
     <Wrapper>
-      <PostForm
-        type="text"
-        placeholder="what's happening?"
-        value={post}
-        onChange={(e) => handleChange(e.target.value)}
-      />
-      <Footer>
-        <Counter length={count}>{count}</Counter>
-        <Button onClick={() => postTweet(post)}>Meow</Button>
-      </Footer>
+      {status == "loading" ? (
+        <div>loading...</div>
+      ) : (
+        <>
+          <PostForm
+            type="text"
+            placeholder="what's happening?"
+            value={post}
+            onChange={(e) => handleChange(e.target.value)}
+          />
+          <Footer>
+            <Counter length={count}>{count}</Counter>
+            <Button disabled={isDisabled} onClick={() => postTweet(post)}>
+              Meow
+            </Button>
+          </Footer>
+        </>
+      )}
     </Wrapper>
   );
 };

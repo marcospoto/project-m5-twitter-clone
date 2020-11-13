@@ -4,6 +4,7 @@ import styled from "styled-components";
 import GlobalStyles from "./GlobalStyles";
 import Sidebar from "./Sidebar";
 import { HomeFeed } from "./HomeFeed";
+import { Profile } from "./Profile";
 
 const App = () => {
   return (
@@ -16,7 +17,7 @@ const App = () => {
         <Route exact path="/notifications"></Route>
         <Route exact path="/bookmarks"></Route>
         <Route exact path="/tweet/:tweetId"></Route>
-        <Route exact path="/:profileId"></Route>
+        <Profile exact path="/:profileId"></Profile>
       </Switch>
     </Router>
   );

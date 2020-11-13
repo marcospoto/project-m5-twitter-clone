@@ -4,9 +4,11 @@ import { FiUpload } from "react-icons/fi";
 import { FaRegComment } from "react-icons/fa";
 import { AiOutlineRetweet } from "react-icons/ai";
 import { BiHeart } from "react-icons/bi";
+import moment from "moment";
 
-const Tweet = ({ avatar, displayName, userName, date, status, media }) => {
+const Tweet = ({ avatar, displayName, userName, timestamp, status, media }) => {
   const ref = React.useRef(null);
+
   return (
     <Wrapper>
       <br></br>
@@ -16,14 +18,22 @@ const Tweet = ({ avatar, displayName, userName, date, status, media }) => {
           <Name>
             <DisplayName>{displayName}</DisplayName>
             <Username>@{userName}</Username>
-            <Date>{date}</Date>
+            <Timestamp>
+              {moment(new Date(timestamp)).format("· MMM Do")}
+            </Timestamp>
           </Name>
         </Header>
-        <TweetContents>
-          {status}
-          <br></br>
-          <Photo src={media[0]?.url} />
-        </TweetContents>
+        <TweetContents>{status}</TweetContents>
+        {media.map((media, index) => {
+          if (media.type === "img")
+            return (
+              <Photo
+                src={media.url}
+                alt={`Image for ${status}`}
+                key={`img-order-${index}`}
+              />
+            );
+        })}
 
         <Footer>
           <Stats>
@@ -84,7 +94,7 @@ const Username = styled.div`
   margin-left: 10px;
 `;
 
-const Date = styled.div`
+const Timestamp = styled.div`
   color: rgb(101, 119, 134);
   font-size: 16px;
   padding-bottom: 16px;
@@ -93,12 +103,12 @@ const Date = styled.div`
 
 const TweetContents = styled.div`
   font-size: 18px;
-  padding: 16px 0;
+  padding: 5px;
 `;
 const Photo = styled.img`
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 5%;
 `;
 
 const Footer = styled.footer``;

@@ -1,12 +1,16 @@
 import { ReactComponent as Logo } from "../assets/logo.svg";
+import React, { useContext } from "react";
 
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { FiHome, FiUser, FiBookmark } from "react-icons/fi";
 import { COLORS } from "../constants";
 import { BsBell } from "react-icons/bs";
+import { useCurrentUser } from "./CurrentUserContext";
 
 const Sidebar = () => {
+  const { currentUser } = useCurrentUser();
+
   return (
     <Wrapper>
       <StyledLogo src={Logo} />
@@ -18,7 +22,7 @@ const Sidebar = () => {
       </Div>
       <Div>
         <FiUser />
-        <NavigationLink to="/profile/abc">Profile</NavigationLink>
+        <NavigationLink to={`${currentUser}`}>Profile</NavigationLink>
       </Div>
       <Div>
         <BsBell />

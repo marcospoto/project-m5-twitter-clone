@@ -1,13 +1,11 @@
 import Tweet from "./Tweet";
 import React, { useEffect, useState, useContext } from "react";
 import { useTweet } from "./TweetContext";
-import moment from "moment";
 import styled from "styled-components";
 import PostTweet from "./PostTweet";
 
 export const HomeFeed = () => {
   const { tweets } = useTweet();
-  const date = moment().format("h:mm a - MMM Do, YYYY");
 
   return (
     <Wrapper>
@@ -21,7 +19,7 @@ export const HomeFeed = () => {
               avatar={tweet?.author?.avatarSrc}
               displayName={tweet?.author?.displayName}
               userName={tweet?.author?.handle}
-              date={tweet?.timestamp}
+              timestamp={tweet?.timestamp}
               status={tweet?.status}
               media={tweet?.media}
             />
