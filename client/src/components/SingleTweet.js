@@ -2,14 +2,16 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import moment from "moment";
 import styled from "styled-components";
-import { FiUpload } from "react-icons/fi";
-import { FaRegComment } from "react-icons/fa";
-import { AiOutlineRetweet } from "react-icons/ai";
-import { BiHeart } from "react-icons/bi";
+import ActionBar from "./ActionBar";
 
-export const SingleTweet = () => {
+export const SingleTweet = ({ userName, numLikes, isLiked }) => {
   const { tweetId } = useParams();
   const [tweetDetails, setTweetDetails] = useState(null);
+  let history = useHistory();
+
+  const handleClickProfile = (e) => {
+    history.push(`/${userName}`);
+  };
 
   useEffect(() => {
     fetch(`/api/tweet/${tweetId}`, {
@@ -27,7 +29,7 @@ export const SingleTweet = () => {
       <Body>
         <Header>
           <Avatar src={tweetDetails?.author?.avatarSrc} />
-          <Name>
+          <Name onClick={handleClickProfile}>
             <DisplayName>{tweetDetails?.author?.displayName}</DisplayName>
             <Username>@{tweetDetails?.author?.handle}</Username>
           </Name>
@@ -46,19 +48,7 @@ export const SingleTweet = () => {
         <Timestamp>
           {moment(new Date(tweetDetails?.timestamp)).format("LT · ll")}
         </Timestamp>
-        <Footer>
-          <Stats>
-            <FaRegComment />
-            <AiOutlineRetweet />
-            <BiHeart />
-            <FiUpload />
-            {/* <StatCount>{numOfRetweets}</StatCount> */}
-            {/* <StatType>Retweets</StatType> */}
-            {/* <StatCount>{numOfLikes}</StatCount> */}
-            {/* <StatType>Likes</StatType> */}
-          </Stats>
-          {/* <ActionBar /> */}
-        </Footer>
+        <ActionBar numLikes={numLikes} isLiked={isLiked} tweetId={tweetId} />
       </Body>
     </Wrapper>
   );
@@ -113,28 +103,10 @@ const Timestamp = styled.div`
 const TweetContents = styled.div`
   font-size: 18px;
   padding: 5px;
+  cursor: pointer;
 `;
 const Photo = styled.img`
   width: 100%;
   margin-top: 10px;
   border-radius: 5%;
-`;
-
-const Footer = styled.footer``;
-
-const Stats = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 48px;
-`;
-
-const StatCount = styled.span`
-  font-weight: bold;
-  margin-right: 5px;
-`;
-
-const StatType = styled.span`
-  color: rgb(101, 119, 134);
-  margin-right: 30px;
 `;

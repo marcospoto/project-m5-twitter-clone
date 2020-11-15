@@ -91,6 +91,9 @@ export const Profile = () => {
               timestamp={tweet?.timestamp}
               status={tweet?.status}
               media={tweet?.media}
+              tweetId={tweet?.id}
+              isLiked={tweet?.isLiked}
+              numLikes={tweet?.numLikes}
             />
           );
         })}

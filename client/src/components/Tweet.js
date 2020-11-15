@@ -1,24 +1,29 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { FiUpload } from "react-icons/fi";
-import { FaRegComment } from "react-icons/fa";
-import { AiOutlineRetweet } from "react-icons/ai";
-import { BiHeart } from "react-icons/bi";
 import moment from "moment";
+import ActionBar from "./ActionBar";
 
-const Tweet = ({ avatar, displayName, userName, timestamp, status, media }) => {
+const Tweet = ({
+  avatar,
+  displayName,
+  userName,
+  timestamp,
+  status,
+  media,
+  tweetId,
+  isLiked,
+  numLikes,
+}) => {
   let history = useHistory();
 
   const handleClickProfile = (e) => {
-    e.stopPropagation();
     history.push(`/${userName}`);
   };
 
-  // const handleClickToTweet = (e) => {
-  //   e.stopPropagation();
-  //   history.push(`/tweet/${tweetId}`);
-  // };
+  const handleClickToTweet = (e) => {
+    history.push(`/tweet/${tweetId}`);
+  };
 
   return (
     <Wrapper>
@@ -33,7 +38,7 @@ const Tweet = ({ avatar, displayName, userName, timestamp, status, media }) => {
             </Timestamp>
           </Name>
         </Header>
-        <TweetContents>{status}</TweetContents>
+        <TweetContents onClick={handleClickToTweet}>{status}</TweetContents>
         {media?.map((media, index) => {
           if (media.type === "img")
             return (
@@ -44,19 +49,8 @@ const Tweet = ({ avatar, displayName, userName, timestamp, status, media }) => {
               />
             );
         })}
-
         <Footer>
-          <Stats>
-            <FaRegComment />
-            <AiOutlineRetweet />
-            <BiHeart />
-            <FiUpload />
-            {/* <StatCount>{numOfRetweets}</StatCount> */}
-            {/* <StatType>Retweets</StatType> */}
-            {/* <StatCount>{numOfLikes}</StatCount> */}
-            {/* <StatType>Likes</StatType> */}
-          </Stats>
-          {/* <ActionBar /> */}
+          <ActionBar numLikes={numLikes} isLiked={isLiked} tweetId={tweetId} />
         </Footer>
       </Body>
     </Wrapper>
@@ -115,6 +109,7 @@ const Timestamp = styled.div`
 const TweetContents = styled.div`
   font-size: 18px;
   padding: 5px;
+  cursor: pointer;
 `;
 const Photo = styled.img`
   width: 100%;
@@ -123,22 +118,5 @@ const Photo = styled.img`
 `;
 
 const Footer = styled.footer``;
-
-const Stats = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 48px;
-`;
-
-const StatCount = styled.span`
-  font-weight: bold;
-  margin-right: 5px;
-`;
-
-const StatType = styled.span`
-  color: rgb(101, 119, 134);
-  margin-right: 30px;
-`;
 
 export default Tweet;

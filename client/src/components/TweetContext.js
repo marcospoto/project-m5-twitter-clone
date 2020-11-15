@@ -51,12 +51,41 @@ export const TweetProvider = ({ children }) => {
       });
   };
 
+  const handleToggleLike = async (tweetId) => {
+    const currentFeedWithLike = tweets.map((tweet) => {
+      if (tweet.id === tweetId) {
+        const isLikedToggled = !tweet.isLiked;
+        const incOrDec = isLikedToggled ? 1 : -1;
+        return {
+          ...tweet,
+          numLikes: tweet.numLikes + incOrDec,
+          isLiked: !tweet.isLiked,
+        };
+      }
+      return tweet;
+    });
+
+    setTweets(currentFeedWithLike);
+
+    const raw = await fetch(`api/tweet/${tweetId}/like`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        like: currentFeedWithLike.find((tweet) => tweet.id === tweetId).isLiked,
+      }),
+    });
+  };
+
   return (
     <TweetContext.Provider
       value={{
         tweets,
         setTweets,
         postTweet,
+        handleToggleLike,
       }}
     >
       {children}

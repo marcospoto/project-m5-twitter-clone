@@ -6,7 +6,6 @@ import Tweet from "./Tweet";
 
 export const HomeFeed = () => {
   const { tweets } = useTweet();
-  console.log(tweets);
 
   return (
     <Wrapper>
@@ -23,6 +22,9 @@ export const HomeFeed = () => {
               timestamp={tweet?.timestamp}
               status={tweet?.status}
               media={tweet?.media}
+              tweetId={tweet?.id}
+              isLiked={tweet?.isLiked}
+              numLikes={tweet?.numLikes}
             />
           );
         })}
